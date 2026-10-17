@@ -4,6 +4,18 @@ An interactive 3D web experience built with Three.js and Vite. It starts as a ca
 
 Originally crafted as a personal interactive gift.
 
+**Live Demo:** [portal-for-yue.netlify.app](https://portal-for-yue.netlify.app/)
+
+---
+
+## Preview
+
+<p align="center">
+  <img src="screenshots/01-landing.png" width="30%" alt="Landing Screen" />
+  <img src="screenshots/02-portal.png" width="30%" alt="Portal View" />
+  <img src="screenshots/03-garden.png" width="30%" alt="Garden Experience" />
+</p>
+
 ---
 
 ## Quick Start
