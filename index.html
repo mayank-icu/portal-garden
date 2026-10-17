@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#F6E7E4" />
+  <title>For Yue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root { --cream:#FBF3EA; --blush:#F4D9D6; --ink:#4A2433; --rose:#A64258; --gold:#C9A06A; --serif:"Cormorant Garamond", "Iowan Old Style", Georgia, serif; --sans:"Jost", "Helvetica Neue", system-ui, sans-serif; }
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { margin:0; height:100%; overflow:hidden; background:var(--cream); font-family:var(--sans); color:var(--ink);
+      overscroll-behavior:none; touch-action:none; user-select:none; -webkit-user-select:none; }
+    svg.i { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; display:block; }
+    #video { position:fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; display:none; background:#000; transition:filter 1.2s ease; }
+    body.mood #video { filter:brightness(.82) saturate(.85); }
+    #bg { position:fixed; inset:0; z-index:0; display:none; background:linear-gradient(180deg,#E9D7DC,#F4D9D6 60%,#FBF3EA); }
+    #gl { position:fixed; inset:0; width:100%; height:100%; z-index:1; display:block; }
+    #veil { position:fixed; inset:0; z-index:2; pointer-events:none; opacity:0; transition:opacity 1.4s ease;
+      background:radial-gradient(ellipse at 50% 46%, rgba(30,12,22,0) 38%, rgba(30,12,22,.5) 100%); }
+    body.mood #veil { opacity:1; }
+
+    /* ---------- start screen ---------- */
+    .screen { position:fixed; inset:0; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; overflow:hidden; transition:opacity 1s ease; }
+    .screen.hidden { opacity:0; pointer-events:none; }
+    .bgphoto { position:absolute; inset:-6%; background:url(/bg.jpg) center/cover; animation:drift 36s ease-in-out infinite alternate; }
+    @keyframes drift { from { transform:scale(1.02) translate3d(0,0,0); } to { transform:scale(1.14) translate3d(-2%,-1%,0); } }
+    .wash { position:absolute; inset:0; background:linear-gradient(180deg, rgba(251,243,234,.86) 0%, rgba(251,243,234,.72) 48%, rgba(244,217,214,.86) 100%); }
+    .inner { position:relative; display:flex; flex-direction:column; align-items:center; padding:0 32px; max-width:420px; }
+    .eyebrow { font-weight:400; font-size:.7rem; letter-spacing:.38em; text-transform:uppercase; opacity:.7; margin-bottom:22px; }
+    .screen h1 { margin:0; font-family:var(--serif); font-weight:500; font-size:4.2rem; line-height:1; letter-spacing:.01em; }
+    .screen h1 em { font-style:italic; font-weight:400; color:var(--rose); }
+    .rule { width:44px; height:1px; background:var(--gold); margin:28px 0 24px; }
+    .sub { font-family:var(--serif); font-style:italic; font-size:1.25rem; line-height:1.45; margin:0; opacity:.85; max-width:270px; }
+    #startBtn { margin-top:44px; background:transparent; border:1px solid var(--ink); color:var(--ink); font:500 .72rem/1 var(--sans);
+      letter-spacing:.34em; text-transform:uppercase; padding:17px 44px 17px 48px; border-radius:0; cursor:pointer; transition:background .3s, color .3s; }
+    #startBtn:active { background:var(--ink); color:var(--cream); }
+    #startBtn[disabled] { opacity:.55; }
+    .foot { position:absolute; bottom:calc(30px + env(safe-area-inset-bottom)); left:0; right:0; font-size:.68rem; letter-spacing:.14em; opacity:.6; padding:0 30px; line-height:1.7; }
+    .from { position:absolute; top:calc(34px + env(safe-area-inset-top)); left:0; right:0; font-family:var(--serif); font-style:italic; font-size:1.05rem; opacity:.75; }
+
+    /* ---------- overlays ---------- */
+    #hint { position:fixed; left:0; right:0; bottom:calc(54px + env(safe-area-inset-bottom)); z-index:5; text-align:center;
+      font:400 .72rem/1.6 var(--sans); letter-spacing:.3em; text-transform:uppercase; color:#fff; text-shadow:0 1px 14px rgba(40,14,28,.7);
+      pointer-events:none; opacity:0; transition:opacity .9s; padding:0 24px; }
+    #hint.show { opacity:.95; }
+    #note { position:fixed; top:calc(66px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); z-index:6; text-align:center;
+      font:400 .74rem/1.5 var(--sans); letter-spacing:.08em; color:var(--ink); background:rgba(251,243,234,.9); padding:9px 16px; display:none; max-width:86vw; }
+    .pill { position:fixed; z-index:8; display:none; align-items:center; gap:8px; height:42px; padding:0 14px; border:1px solid rgba(255,255,255,.55);
+      font:400 .66rem/1 var(--sans); letter-spacing:.22em; text-transform:uppercase; cursor:pointer; color:var(--ink);
+      background:rgba(251,243,234,.72); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-radius:21px; }
+    #mute { top:calc(12px + env(safe-area-inset-top)); right:12px; width:42px; padding:0; justify-content:center; }
+    #exit { top:calc(12px + env(safe-area-inset-top)); left:12px; }
+    #count { top:calc(12px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); cursor:default; letter-spacing:.12em; }
+    #count b { font-weight:500; min-width:1.2em; text-align:center; }
+    #wish { right:12px; bottom:calc(14px + env(safe-area-inset-bottom)); }
+    #flash { position:fixed; inset:0; z-index:15; pointer-events:none; opacity:0; transition:opacity .6s ease; background:radial-gradient(circle,#fff 0%,#FBF3EA 60%,#F4D9D6 100%); }
+    #flash.on { opacity:1; }
+    #flash.slow { transition:opacity 1.8s ease; }
+    #msg { position:fixed; left:50%; bottom:calc(30px + env(safe-area-inset-bottom)); z-index:12; width:min(88vw,380px);
+      transform:translate(-50%,20px); opacity:0; pointer-events:none; transition:opacity 1.1s ease, transform 1.1s ease;
+      background:rgba(251,243,234,.93); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      padding:30px 28px 18px; text-align:center; border-top:1px solid var(--gold); }
+    #msg.show { opacity:1; transform:translate(-50%,0); pointer-events:auto; }
+    #msgName { font-family:var(--serif); font-style:italic; font-size:1.9rem; margin:0 0 10px; color:var(--rose); }
+    #msgText { font-family:var(--serif); font-size:1.28rem; line-height:1.5; margin:0; white-space:pre-wrap; min-height:6em; }
+    #msgSig { font-family:var(--serif); font-style:italic; font-size:1.25rem; margin:12px 0 0; color:var(--rose); opacity:0; transition:opacity 1.2s; }
+    #msgClose { font-size:.6rem; letter-spacing:.3em; text-transform:uppercase; opacity:.45; margin:14px 0 0; }
+    #debug { position:fixed; top:112px; left:4px; z-index:20; font:11px monospace; color:#0f0; background:rgba(0,0,0,.55); padding:4px 6px; display:none; white-space:pre; pointer-events:none; }
+    #landscape { position:fixed; inset:0; z-index:30; display:none; align-items:center; justify-content:center; text-align:center; background:var(--blush);
+      font:italic 1.3rem var(--serif); padding:24px; }
+    @media (orientation:landscape) and (max-height:500px) { #landscape { display:flex; } }
+  </style>
+</head>
+<body>
+  <video id="video" playsinline webkit-playsinline muted autoplay></video>
+  <div id="bg"></div>
+  <canvas id="gl"></canvas>
+  <div id="veil"></div>
+  <div id="hint"></div>
+  <div id="note"></div>
+  <button id="exit" class="pill" aria-label="Exit portal"></button>
+  <div id="count" class="pill"></div>
+  <button id="mute" class="pill" aria-label="Toggle music"></button>
+  <button id="wish" class="pill" aria-label="Make a wish"></button>
+  <div id="msg"><p id="msgName"></p><p id="msgText"></p><p id="msgSig"></p><p id="msgClose">Tap to close</p></div>
+  <div id="debug"></div>
+  <div id="flash"></div>
+  <div id="landscape">Please turn your phone upright.</div>
+  <div id="start" class="screen">
+    <div class="bgphoto"></div><div class="wash"></div>
+    <div class="from" id="from"></div>
+    <div class="inner">
+      <div class="eyebrow">A small garden</div>
+      <h1 id="title"></h1>
+      <div class="rule"></div>
+      <p class="sub" id="sub"></p>
+      <button id="startBtn"></button>
+    </div>
+    <div class="foot">Best with sound on.<br />You will be asked to allow camera and motion.</div>
+  </div>
+  <div id="inapp" class="screen hidden" style="display:none; background:var(--cream)">
+    <div class="inner">
+      <h1 style="font-size:2.4rem">Almost there</h1>
+      <div class="rule"></div>
+      <p class="sub">Please open this link in Chrome or Safari so the garden can use your camera.</p>
+      <button id="copyBtn" style="margin-top:36px;background:transparent;border:1px solid #4A2433;color:#4A2433;font:500 .72rem var(--sans);letter-spacing:.3em;text-transform:uppercase;padding:16px 36px;cursor:pointer">Copy link</button>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
